@@ -8,6 +8,7 @@ The first thing you need is a free API key from https://home.openweathermap.org/
 Open 'weather.py' and replace **Key Here** with your API key at line 52.<br>
 **Location** can be left as it is unless you want to add it to your display.<br>
 Get your **longitude** and **lattitude** using I used https://www.latlong.net and put that in as well.<br>
+Line 176 has a reminder for taking out the trash as well that you will want to change if your trash pickup doesn't come on Monday and Thursday like mine. :)<br>
 <br>
 That's about it. Run the python file and you should see output on the display. 
 
