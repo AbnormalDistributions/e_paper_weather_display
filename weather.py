@@ -47,7 +47,7 @@ grey = 'rgb(235,235,235)'
 
 # Initiate and clear screen
 epd.init()
-#epd.Clear()
+epd.Clear()
 
 API_KEY = '******API KEY*******'
 LOCATION = '*******'
