@@ -2,8 +2,8 @@
 <br>
 Raspberry Pi weather display using Waveshare e-paper 7.5 inch display and Open Weather Map API and Python.
 <img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photo.jpg" width=75% height=75%> 
-<h1>Setup</h1>
 <br>
+<h1>Setup</h1>
 The first thing you need is a free API key from https://home.openweathermap.org/users/sign_up.
 Open 'weather.py' and replace **Key Here** with your API key at line 52.
 **Location** can be left as it is unless you want to add it to your display.
