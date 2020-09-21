@@ -3,6 +3,17 @@
   Raspberry Pi weather display using Waveshare e-paper 7.5 inch display, Open Weather Map API, and Python.
 <img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photo.jpg" width=75% height=75%> <br>
 
+<h1>Versions</h1>
+  <h2>Version 1.0</h1>
+    <ul>
+	  <li>Initial Commit</li>
+	</ul>
+  <h2>Version 1.1</h1>
+    <ul>
+      <li>Added more legible icons</li>
+    </ul>
+
+
 <h1>Setup</h1>
 <ol>
   <li>The first thing you need is a free API key from https://home.openweathermap.org/users/sign_up.</li>
@@ -25,3 +36,13 @@ Fairly extensive adjustments will have to be made for other sized screens.
   <li>SD card for the Pi at least 8 GB.</li>
   <li>Power supply for the Pi.</li>
 </ol>
+
+<h1>Credit</h1>
+  Icon designs are originally by [Erik Flowers] (https://erikflowers.github.io/weather-icons/). Some icons have been modified. 
+
+<h1>Licensing</h1>
+  <ul>
+    <li>Weather Icons licensed under [SIL OFL 1.1](http://scripts.sil.org/OFL)</li>
+    <li>Code licensed under [MIT License](http://opensource.org/licenses/mit-license.html)</li>
+    <li>Documentation licensed under [CC BY 3.0](http://creativecommons.org/licenses/by/3.0)</li>
+  <ul>
