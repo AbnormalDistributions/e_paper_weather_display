@@ -6,11 +6,11 @@
 <h1>Versions</h1>
   <h2>Version 1.0</h1>
     <ul>
-	  <li>Initial Commit</li>
+	  <li>Initial Commit.</li>
 	</ul>
   <h2>Version 1.1</h1>
     <ul>
-      <li>Added more legible icons</li>
+      <li>Switched to more legible icons.</li>
     </ul>
 
 
