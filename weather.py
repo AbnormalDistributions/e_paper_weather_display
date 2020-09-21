@@ -1,10 +1,10 @@
 # This little program is for the Waveshare 7.5
 # inch Version 2 black and white only epaper display
 # It uses OpenWeatherMap API to display weather info
-
 import sys
 import os
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
+icondir = os.path.join(picdir, 'icon')
 fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 
 # Search lib folder for display driver modules
@@ -47,25 +47,26 @@ grey = 'rgb(235,235,235)'
 
 # Initiate and clear screen
 epd.init()
-epd.Clear()
+#epd.Clear()
 
-API_KEY = '*****KEY HERE******'
-LOCATION = '******Name of Location*****'
-LATITUDE = '******'
-LONGITUDE = '*********'
+API_KEY = '******API KEY*******'
+LOCATION = '*******'
+LATITUDE = '*******'
+LONGITUDE = '*******'
 UNITS = 'imperial'
 BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
 URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
 
 while True:
     # HTTP request
+    print('Getting new weather info.')
     response = requests.get(URL)
     # check status of code of request
     
     error = None
     while error == None:
         if response.status_code == 200:
-            print('Connection to Open Weather successful')
+            print('Connection to Open Weather successful.')
             # get data in jason format
             data = response.json()
             
@@ -84,7 +85,7 @@ while True:
             report = weather[0]['description']
             # get icon url
             icon_code = weather[0]['icon']
-            icon_URL = 'http://openweathermap.org/img/wn/'+ icon_code +'@4x.png'
+            #icon_URL = 'http://openweathermap.org/img/wn/'+ icon_code +'@4x.png'
             
             # get daily dict block
             daily = data['daily']
@@ -148,14 +149,14 @@ while True:
     draw = ImageDraw.Draw(template)
     
     # Draw top left box
-    ## First thing is to place the icon image
-    ### Place a grey rectangle
-    draw.rectangle((25, 25, 225, 180), outline=black)
-    ### Place the image
-    response = requests.get(icon_URL)
-    icon_image = Image.open(BytesIO(response.content))
-    template.paste(icon_image, (23, 3), mask=icon_image)
-    # Next is drawing the text
+    ## Open icon file
+    icon_file = icon_code + '.png' 
+    icon_image = Image.open(os.path.join(icondir, icon_file))
+    ### Paste the image
+    template.paste(icon_image, (40, 15))
+    ## Place a black rectangle outline
+    draw.rectangle((25, 20, 225, 180), outline=black)
+    ## Draw text
     draw.text((30, 195), string_report, font=font22, fill=black)
     draw.text((30, 230), string_precip_percent, font=font30, fill=black)
     # Draw top right box
