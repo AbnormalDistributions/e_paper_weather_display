@@ -1,11 +1,13 @@
-# E-paper Weather Display
-Raspberry Pi weather display using Waveshare e-paper 7.5 inch display and Open Weather Map API and Python. 
-
-# Setup
+<h1>E-paper Weather Display</h1>
+<br>
+Raspberry Pi weather display using Waveshare e-paper 7.5 inch display and Open Weather Map API and Python.
+<img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photo.jpg" width=75% height=75%> 
+<h1>Setup</h1>
+<br>
 The first thing you need is a free API key from https://home.openweathermap.org/users/sign_up.
-Open 'weather.py' and replace ******Key Here****** with your API key at line 52.
-Location can be left as it is unless you want to add it to your display.
-Get your longitude and lattitude using I used https://www.latlong.net and put that in as well. 
+Open 'weather.py' and replace **Key Here** with your API key at line 52.
+**Location** can be left as it is unless you want to add it to your display.
+Get your **longitude** and **lattitude** using I used https://www.latlong.net and put that in as well. 
 
 That's about it. Run the python file and you should see output on the display. 
 
