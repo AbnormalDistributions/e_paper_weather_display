@@ -20,7 +20,7 @@
   <li>Open 'weather.py' and replace **Key Here** with your API key at line 52.</li>
   <li>**Location** can be left as it is unless you want to add it to your display.</li>
   <li>Get your **longitude** and **lattitude** using I used https://www.latlong.net and put that in as well.</li>
-  <li>Line 176 has a reminder for taking out the trash as well that you will want to change if your trash pickup doesn't come on Monday and Thursday like mine. :)</li>
+  <li>There is also a reminder for taking out the trash near the end of the script that you will want to change if your trash pickup doesn't come on Monday and Thursday like mine. :)</li>
 </ol>
 <br>
 That's about it. Run the python file and you should see output on the display. 
