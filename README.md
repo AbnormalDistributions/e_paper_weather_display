@@ -4,20 +4,21 @@
 <img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photo.jpg" width=75% height=75%> <br>
 
 <h1>Versions</h1>
-  <h2>Version 1.0</h1>
+  <h2>Version 1.0</h2>
     <ul>
 	  <li>Initial Commit.</li>
 	</ul>
-  <h2>Version 1.1</h1>
+  <h2>Version 1.1</h2>
     <ul>
       <li>Switched to more legible icons.</li>
     </ul>
-  <h2>Version 1.2</h1>
+  <h2>Version 1.2</h2>
     <ul>
       <li>Added support for connection errors.</li>
       <li>Added support for HTTP errors.</li>
       <li>Added "dispay_error" fuction to display respective errors if present.</li>
     </ul>
+  <h2>Version 1.3</h2>
     <ul>
       <li>Added option to store retreived weather data in CSV file.</li>
     </ul>
