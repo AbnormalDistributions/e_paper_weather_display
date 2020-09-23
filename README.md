@@ -12,6 +12,12 @@
     <ul>
       <li>Switched to more legible icons.</li>
     </ul>
+  <h2>Version 1.2</h1>
+    <ul>
+      <li>Added support for connection errors.</li>
+      <li>Added support for HTTP errors.</li>
+      <li>Added "dispay_error" fuction to display respective errors if present.</li>
+    </ul>
 
 
 <h1>Setup</h1>

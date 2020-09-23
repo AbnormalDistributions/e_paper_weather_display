@@ -34,6 +34,26 @@ def write_to_screen(image, sleep_seconds):
     print('Sleeping for ' + str(sleep_seconds) +'.')
     time.sleep(sleep_seconds)
 
+# define function for displaying error
+def display_error(error_source):
+    # Display an error
+    print('Error in the', error_source, 'request.')
+    # Initialize drawing
+    error_image = Image.new('1', (epd.width, epd.height), 255)
+    # Initialize the drawing
+    draw = ImageDraw.Draw(error_image)
+    draw.text((100, 150), error_source +' ERROR', font=font50, fill=black)
+    draw.text((100, 300), 'Retrying in 30 seconds', font=font22, fill=black)
+    current_time = datetime.now().strftime('%H:%M')
+    draw.text((300, 365), 'Last Refresh: ' + str(current_time), font = font50, fill=black)
+    # Save the error image
+    error_image_file = 'error.png'
+    error_image.save(os.path.join(picdir, error_image_file))
+    # Close error image
+    error_image.close()
+    # Write error to screen 
+    write_to_screen(error_image_file, 30)
+
 # Set the fonts
 font22 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 22)
 font30 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 30)
@@ -58,13 +78,23 @@ BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?'
 URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
 
 while True:
-    # HTTP request
-    print('Getting new weather info.')
-    response = requests.get(URL)
-    # check status of code of request
+    # Ensure there are no errors with connection
+    error_connect = True
+    while error_connect == True:
+        try:
+            # HTTP request
+            print('Attempting to connect to OWM.')
+            response = requests.get(URL)
+            print('Connection to OWM successful.')
+            error_connect = None
+        except:
+            # Call function to display connection error
+            print('Connection error.')
+            display_error('CONNECTION') 
     
     error = None
     while error == None:
+        # Check status of code request
         if response.status_code == 200:
             print('Connection to Open Weather successful.')
             # get data in jason format
@@ -125,23 +155,8 @@ while True:
             print('Probabilty of Precipitation: ' + str(format(daily_precip_percent, '.0f'))  + '%')
             '''    
         else:
-            # Display an error
-            print('Error in the HTTP request.')
-            # Initialize drawing
-            error_image = Image.new('1', (epd.width, epd.height), 255)
-            # Initialize the drawing
-            draw = ImageDraw.Draw(error_image)
-            draw.text((100, 150), 'CONNECTION ERROR', font=font50, fill=black)
-            draw.text((100, 300), 'Retrying in 5 seconds', font=font22, fill=black)
-            current_time = datetime.now().strftime('%H:%M')
-            draw.text((300, 365), 'Last Refresh: ' + str(current_time), font = font50, fill=black)
-            # Save the error image
-            error_image_file = 'error.png'
-            error_image.save(os.path.join(picdir, error_image_file))
-            # Close error image
-            error_image.close()
-            # Write error to screen 
-            write_to_screen(error_image_file, 30)
+            # Call function to display HTTP error
+            display_error('HTTP')
 
     # Open template file
     template = Image.open(os.path.join(picdir, 'template.png'))
