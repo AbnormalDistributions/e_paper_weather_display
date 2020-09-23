@@ -19,6 +19,7 @@ import traceback
 
 import requests, json
 from io import BytesIO
+import csv
 
 # define funciton for writing image and sleeping for 5 min.
 def write_to_screen(image, sleep_seconds):
@@ -65,7 +66,8 @@ black = 'rgb(0,0,0)'
 white = 'rgb(255,255,255)'
 grey = 'rgb(235,235,235)'
 
-# Initiate and clear screen
+# Initialize and clear screen
+print('Initializing and clearing screen.')
 epd.init()
 epd.Clear()
 
@@ -74,6 +76,8 @@ LOCATION = '*******'
 LATITUDE = '*******'
 LONGITUDE = '*******'
 UNITS = 'imperial'
+CSV_OPTION = True # if csv_option == True, a weather data will be appended to 'record.csv'
+
 BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
 URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
 
@@ -128,7 +132,22 @@ while True:
             temp_max = daily_temp['max']
             temp_min = daily_temp['min']
             
-            # Set strings to be printed
+            # Append weather data to CSV if csv_option == True
+            if CSV_OPTION == True:
+                # Get current year, month, date, and time
+                current_year = datetime.now().strftime('%Y')
+                current_month = datetime.now().strftime('%m')
+                current_date = datetime.now().strftime('%d')
+                current_time = datetime.now().strftime('%H:%M')
+                #open the CSV and append weather data
+                with open('records.csv', 'a', newline='') as csv_file:
+                    writer = csv.writer(csv_file, delimiter=',')
+                    writer.writerow([current_year, current_month, current_date, current_time,
+                                     LOCATION,temp_current, feels_like, temp_max, temp_min,
+                                     humidity, daily_precip_float, wind_speed])
+                print('Weather data appended to CSV.')
+            
+            # Set strings to be printed to screen
             string_location = LOCATION
             string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}F'
             string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}F'

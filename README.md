@@ -18,6 +18,9 @@
       <li>Added support for HTTP errors.</li>
       <li>Added "dispay_error" fuction to display respective errors if present.</li>
     </ul>
+    <ul>
+      <li>Added option to store retreived weather data in CSV file.</li>
+    </lu>
 
 
 <h1>Setup</h1>
@@ -26,6 +29,7 @@
   <li>Open 'weather.py' and replace **Key Here** with your API key.</li>
   <li>**Location** can be left as it is unless you want to add it to your display.</li>
   <li>Get your **longitude** and **lattitude** using I used https://www.latlong.net and put that in as well.</li>
+  <li>Set CSV_OPTION to False if you would not like weather data appended to 'records.csv' after every refresh.</li>
   <li>There is also a reminder for taking out the trash near the end of the script that you will want to change if your trash pickup doesn't come on Monday and Thursday like mine. :)</li>
 </ol>
 <br>
