@@ -20,7 +20,7 @@
     </ul>
     <ul>
       <li>Added option to store retreived weather data in CSV file.</li>
-    </lu>
+    </ul>
 
 
 <h1>Setup</h1>
