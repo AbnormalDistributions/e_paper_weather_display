@@ -58,9 +58,11 @@ def display_error(error_source):
 # Set the fonts
 font22 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 22)
 font30 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 30)
+font35 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 35)
 font50 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 50)
+font60 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 60)
 font100 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 100)
-font150 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 150)
+font160 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 160)
 # Set the colors
 black = 'rgb(0,0,0)'
 white = 'rgb(255,255,255)'
@@ -152,7 +154,7 @@ while True:
             string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}F'
             string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}F'
             string_humidity = 'Humidity: ' + str(humidity) + '%'
-            string_wind_speed = 'Wind Speed ' + format(wind_speed, '.1f') + ' MPH'
+            string_wind_speed = 'Wind Speed: ' + format(wind_speed, '.1f') + ' MPH'
             string_report = 'Now: ' + report.title()
             string_temp_max = 'High: ' + format(temp_max, '>.0f') + u'\N{DEGREE SIGN}F'
             string_temp_min = 'Low:  ' + format(temp_min, '>.0f') + u'\N{DEGREE SIGN}F'
@@ -191,28 +193,28 @@ while True:
     ## Place a black rectangle outline
     draw.rectangle((25, 20, 225, 180), outline=black)
     ## Draw text
-    draw.text((30, 195), string_report, font=font22, fill=black)
-    draw.text((30, 230), string_precip_percent, font=font30, fill=black)
+    draw.text((30, 200), string_report, font=font22, fill=black)
+    draw.text((30, 240), string_precip_percent, font=font30, fill=black)
     # Draw top right box
-    draw.text((375, 35), string_temp_current, font=font150, fill=black)
-    draw.text((350, 200), string_feels_like, font=font50, fill=black)
+    draw.text((375, 35), string_temp_current, font=font160, fill=black)
+    draw.text((350, 210), string_feels_like, font=font50, fill=black)
     # Draw bottom left box
-    draw.text((35, 305), string_temp_max, font=font50, fill=black)
-    draw.rectangle((170, 365, 265, 367), fill=black)
-    draw.text((35, 370), string_temp_min, font=font50, fill=black)
+    draw.text((35, 325), string_temp_max, font=font50, fill=black)
+    draw.rectangle((170, 385, 265, 387), fill=black)
+    draw.text((35, 390), string_temp_min, font=font50, fill=black)
     # Draw bottom right box
-    draw.text((340, 325), string_humidity, font=font22, fill=black)
-    draw.text((340, 380), string_wind_speed, font=font22, fill=black)
+    draw.text((340, 345), string_humidity, font=font22, fill=black)
+    draw.text((340, 410), string_wind_speed, font=font22, fill=black)
     # Draw bottom right box
-    draw.text((635, 320), 'UPDATED', font=font30, fill=white)
+    draw.text((627, 330), 'UPDATED', font=font35, fill=white)
     current_time = datetime.now().strftime('%H:%M')
-    draw.text((636, 365), current_time, font = font50, fill=white)
+    draw.text((627, 375), current_time, font = font60, fill=white)
 
     ## Add a reminder to take out trash on Mon and Thurs
     weekday = datetime.today().weekday()
     if weekday == 0 or weekday == 3:
         draw.rectangle((345, 13, 705, 55), fill =black)
-        draw.text((355, 15), 'TAKE OUT TRASH TODAY!', font=font30, fill=white)
+        draw.text((355, 15), 'TAKE OUT TRASH TODAY!', font=font35, fill=white)
         
     # Save the image for display as PNG
     screen_output_file = os.path.join(picdir, 'screen_output.png')

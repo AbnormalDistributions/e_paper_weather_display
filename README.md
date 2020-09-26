@@ -22,6 +22,10 @@
     <ul>
       <li>Added option to store retreived weather data in CSV file.</li>
     </ul>
+  <h2>Version 1.4</h2>
+    <ul>
+      <li>Updated to use full 480 pixels instead of just 450.</li>
+    </lu>
 
 
 <h1>Setup</h1>
