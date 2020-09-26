@@ -30,7 +30,7 @@
 
 
 <h1>Setup</h1>
-<ol type='1'>
+<ol type="1">
   <li>The first thing you need is a free API key from https://home.openweathermap.org/users/sign_up.</li>
   <li>Open 'weather.py' and replace **Key Here** with your API key.</li>
   <li>**Location** can be left as it is unless you want to add it to your display.</li>
@@ -46,7 +46,7 @@ If you are not using a 7.5 inch Version 2 display, you will want to replace 'epd
 Fairly extensive adjustments will have to be made for other sized screens.
 
 # Parts
-<ol type='1'>
+<ol type="1"">
   <li>https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT</li>
   <li>Raspberry Pi 3, but this will run on any of them except the Pi Zero that doesn't have soldered headers.</li>
   <li>SD card for the Pi at least 8 GB.</li>
