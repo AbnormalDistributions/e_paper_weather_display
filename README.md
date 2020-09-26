@@ -46,13 +46,13 @@ If you are not using a 7.5 inch Version 2 display, you will want to replace 'epd
 Fairly extensive adjustments will have to be made for other sized screens.
 
 # Parts
-<ol type="1"">
+<ul>
   <li>https://www.waveshare.com/wiki/7.5inch_e-Paper_HAT</li>
   <li>Raspberry Pi 3, but this will run on any of them except the Pi Zero that doesn't have soldered headers.</li>
   <li>SD card for the Pi at least 8 GB.</li>
   <li>Power supply for the Pi.</li>
   <li>5 x 7 inch photo frame from a thrift store.</li>
-</ol>
+</ul>
 
 <h1>Credit</h1>
   Icon designs are originally by [Erik Flowers] (https://erikflowers.github.io/weather-icons/). Some icons have been modified. 
