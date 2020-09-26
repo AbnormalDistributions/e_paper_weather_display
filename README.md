@@ -51,6 +51,7 @@ Fairly extensive adjustments will have to be made for other sized screens.
   <li>Raspberry Pi 3, but this will run on any of them except the Pi Zero that doesn't have soldered headers.</li>
   <li>SD card for the Pi at least 8 GB.</li>
   <li>Power supply for the Pi.</li>
+  <li>5 x 7 inch photo frame from a thrift store.</li>
 </ol>
 
 <h1>Credit</h1>
