@@ -24,7 +24,7 @@
     </ul>
   <h2>Version 1.4</h2>
     <ul>
-      <li>Updated to use full 480 vertical pixels instead of just 450.</li>
+      <li>Updated to use all 480 vertical pixels instead of just 450.</li>
     </lu>
 
 
