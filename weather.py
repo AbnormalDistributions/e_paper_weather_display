@@ -214,7 +214,7 @@ while True:
     weekday = datetime.today().weekday()
     if weekday == 0 or weekday == 3:
         draw.rectangle((345, 13, 705, 55), fill =black)
-        draw.text((355, 15), 'TAKE OUT TRASH TODAY!', font=font35, fill=white)
+        draw.text((355, 15), 'TAKE OUT TRASH TODAY!', font=font30, fill=white)
         
     # Save the image for display as PNG
     screen_output_file = os.path.join(picdir, 'screen_output.png')
