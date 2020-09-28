@@ -29,7 +29,7 @@
     </ul>
   <h2>Version 1.5</h2>
     <ul>
-      <li>Fixed error where "TAKEOUT TRASH TODAY!" was writing in incorrect font.</li>
+      <li>Fixed error where "TAKEOUT TRASH TODAY!" was writing in incorrect font size.</li>
     </ul>
 
 
