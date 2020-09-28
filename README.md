@@ -31,7 +31,7 @@
     <ul>
       <li>Fixed error where "TAKEOUT TRASH TODAY!" was writing in incorrect font size.</li>
     </ul>
-  <h2>Version 1.5</h2>
+  <h2>Version 1.6</h2>
     <ul>
       <li>Increased size of fonts for "Humidity" and "Wind" for better legibility.</li>
     </ul>
