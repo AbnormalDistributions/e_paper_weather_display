@@ -115,7 +115,7 @@ while True:
             # get humidity
             humidity = current['humidity']
             # get pressure
-            wind_speed = current['wind_speed']
+            wind = current['wind_speed']
             # get description
             weather = current['weather']
             report = weather[0]['description']
@@ -146,7 +146,7 @@ while True:
                     writer = csv.writer(csv_file, delimiter=',')
                     writer.writerow([current_year, current_month, current_date, current_time,
                                      LOCATION,temp_current, feels_like, temp_max, temp_min,
-                                     humidity, daily_precip_float, wind_speed])
+                                     humidity, daily_precip_float, wind])
                 print('Weather data appended to CSV.')
             
             # Set strings to be printed to screen
@@ -154,7 +154,7 @@ while True:
             string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}F'
             string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}F'
             string_humidity = 'Humidity: ' + str(humidity) + '%'
-            string_wind_speed = 'Wind Speed: ' + format(wind_speed, '.1f') + ' MPH'
+            string_wind = 'Wind: ' + format(wind, '.1f') + ' MPH'
             string_report = 'Now: ' + report.title()
             string_temp_max = 'High: ' + format(temp_max, '>.0f') + u'\N{DEGREE SIGN}F'
             string_temp_min = 'Low:  ' + format(temp_min, '>.0f') + u'\N{DEGREE SIGN}F'
@@ -202,9 +202,9 @@ while True:
     draw.text((35, 325), string_temp_max, font=font50, fill=black)
     draw.rectangle((170, 385, 265, 387), fill=black)
     draw.text((35, 390), string_temp_min, font=font50, fill=black)
-    # Draw bottom right box
-    draw.text((340, 345), string_humidity, font=font22, fill=black)
-    draw.text((340, 410), string_wind_speed, font=font22, fill=black)
+    # Draw bottom middle box
+    draw.text((345, 340), string_humidity, font=font30, fill=black)
+    draw.text((345, 400), string_wind, font=font30, fill=black)
     # Draw bottom right box
     draw.text((627, 330), 'UPDATED', font=font35, fill=white)
     current_time = datetime.now().strftime('%H:%M')
