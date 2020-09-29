@@ -4,6 +4,8 @@
 <img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photos/photo2.jpg" width=40% height=40%>
 <img src="https://github.com/AbnormalDistributions/e_paper_weather_display/blob/master/photos/photo1.jpg" width=40% height=40%> <br>
 
+<p>If you like what you see, consider <a href="https://ko-fi.com/abnormaldistributions">buying me a coffee</a>.
+
 <h1>Versions</h1>
   <h2>Version 1.0</h2>
     <ul>
