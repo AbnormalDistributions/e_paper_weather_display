@@ -40,7 +40,7 @@
   <h2>Version 1.7</h2>
     <ul>
       <li>Added clear screen function to reduce possibility of burn-in.</li>
-      <li>changed refresh time from 300 to 600 seconds.</li>
+      <li>Changed refresh time from 300 to 600 seconds.</li>
     </ul>
 
 
