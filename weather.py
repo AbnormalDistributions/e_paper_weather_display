@@ -222,5 +222,10 @@ while True:
     # Close the template file
     template.close()
     
+    # Refresh clear screen to avoid burn-in at 3:00 AM
+    if datetime.now().strftime('%H') == '03':
+    	print('Clearning screen to avoid burn-in.')
+    	epd.Clear()
+    
     # Write to screen
-    write_to_screen(screen_output_file, 300)
+    write_to_screen(screen_output_file, 600)
