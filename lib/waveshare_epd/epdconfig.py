@@ -41,6 +41,12 @@ class RaspberryPi:
     BUSY_PIN        = 24
 
     def __init__(self):
+        """
+        Initialize the spide
+
+        Args:
+            self: (todo): write your description
+        """
         import spidev
         import RPi.GPIO
 
@@ -50,18 +56,53 @@ class RaspberryPi:
         self.SPI = spidev.SpiDev(0, 0)
 
     def digital_write(self, pin, value):
+        """
+        Writes an output value to the output.
+
+        Args:
+            self: (todo): write your description
+            pin: (todo): write your description
+            value: (str): write your description
+        """
         self.GPIO.output(pin, value)
 
     def digital_read(self, pin):
+        """
+        Reads an input value from the input buffer.
+
+        Args:
+            self: (todo): write your description
+            pin: (str): write your description
+        """
         return self.GPIO.input(pin)
 
     def delay_ms(self, delaytime):
+        """
+        Delay_ms time delay.
+
+        Args:
+            self: (todo): write your description
+            delaytime: (float): write your description
+        """
         time.sleep(delaytime / 1000.0)
 
     def spi_writebyte(self, data):
+        """
+        Writes a single byte.
+
+        Args:
+            self: (todo): write your description
+            data: (array): write your description
+        """
         self.SPI.writebytes(data)
 
     def module_init(self):
+        """
+        Initialize the module
+
+        Args:
+            self: (todo): write your description
+        """
         self.GPIO.setmode(self.GPIO.BCM)
         self.GPIO.setwarnings(False)
         self.GPIO.setup(self.RST_PIN, self.GPIO.OUT)
@@ -73,6 +114,12 @@ class RaspberryPi:
         return 0
 
     def module_exit(self):
+        """
+        Exit the output.
+
+        Args:
+            self: (todo): write your description
+        """
         logging.debug("spi end")
         self.SPI.close()
 
@@ -91,6 +138,12 @@ class JetsonNano:
     BUSY_PIN        = 24
 
     def __init__(self):
+        """
+        Initialize the jets
+
+        Args:
+            self: (todo): write your description
+        """
         import ctypes
         find_dirs = [
             os.path.dirname(os.path.realpath(__file__)),
@@ -110,18 +163,53 @@ class JetsonNano:
         self.GPIO = Jetson.GPIO
 
     def digital_write(self, pin, value):
+        """
+        Writes an output value to the output.
+
+        Args:
+            self: (todo): write your description
+            pin: (todo): write your description
+            value: (str): write your description
+        """
         self.GPIO.output(pin, value)
 
     def digital_read(self, pin):
+        """
+        Reads an input from the device read.
+
+        Args:
+            self: (todo): write your description
+            pin: (str): write your description
+        """
         return self.GPIO.input(self.BUSY_PIN)
 
     def delay_ms(self, delaytime):
+        """
+        Delay_ms time delay.
+
+        Args:
+            self: (todo): write your description
+            delaytime: (float): write your description
+        """
         time.sleep(delaytime / 1000.0)
 
     def spi_writebyte(self, data):
+        """
+        Write a single byte.
+
+        Args:
+            self: (todo): write your description
+            data: (array): write your description
+        """
         self.SPI.SYSFS_software_spi_transfer(data[0])
 
     def module_init(self):
+        """
+        Initialize the module
+
+        Args:
+            self: (todo): write your description
+        """
         self.GPIO.setmode(self.GPIO.BCM)
         self.GPIO.setwarnings(False)
         self.GPIO.setup(self.RST_PIN, self.GPIO.OUT)
@@ -132,6 +220,12 @@ class JetsonNano:
         return 0
 
     def module_exit(self):
+        """
+        Clean up the output.
+
+        Args:
+            self: (todo): write your description
+        """
         logging.debug("spi end")
         self.SPI.SYSFS_software_spi_end()
 

@@ -37,6 +37,12 @@ EPD_HEIGHT      = 480
 
 class EPD:
     def __init__(self):
+        """
+        Initialize the device.
+
+        Args:
+            self: (todo): write your description
+        """
         self.reset_pin = epdconfig.RST_PIN
         self.dc_pin = epdconfig.DC_PIN
         self.busy_pin = epdconfig.BUSY_PIN
@@ -46,6 +52,12 @@ class EPD:
     
     # Hardware reset
     def reset(self):
+        """
+        !
+
+        Args:
+            self: (todo): write your description
+        """
         epdconfig.digital_write(self.reset_pin, 1)
         epdconfig.delay_ms(200) 
         epdconfig.digital_write(self.reset_pin, 0)
@@ -54,18 +66,38 @@ class EPD:
         epdconfig.delay_ms(200)   
 
     def send_command(self, command):
+        """
+        Send a command to ldconfig.
+
+        Args:
+            self: (todo): write your description
+            command: (str): write your description
+        """
         epdconfig.digital_write(self.dc_pin, 0)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([command])
         epdconfig.digital_write(self.cs_pin, 1)
 
     def send_data(self, data):
+        """
+        Send data to the hi.
+
+        Args:
+            self: (todo): write your description
+            data: (todo): write your description
+        """
         epdconfig.digital_write(self.dc_pin, 1)
         epdconfig.digital_write(self.cs_pin, 0)
         epdconfig.spi_writebyte([data])
         epdconfig.digital_write(self.cs_pin, 1)
         
     def ReadBusy(self):
+        """
+        This method is used off the bus.
+
+        Args:
+            self: (todo): write your description
+        """
         logging.debug("e-Paper busy")
         self.send_command(0x71)
         busy = epdconfig.digital_read(self.busy_pin)
@@ -75,6 +107,12 @@ class EPD:
         epdconfig.delay_ms(200)
         
     def init(self):
+        """
+        !
+
+        Args:
+            self: (todo): write your description
+        """
         if (epdconfig.module_init() != 0):
             return -1
         # EPD hardware init start
@@ -113,6 +151,13 @@ class EPD:
         return 0
 
     def getbuffer(self, image):
+        """
+        Get image buffer.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         # logging.debug("bufsiz = ",int(self.width/8) * self.height)
         buf = [0xFF] * (int(self.width/8) * self.height)
         image_monocolor = image.convert('1')
@@ -137,6 +182,13 @@ class EPD:
         return buf
         
     def display(self, image):
+        """
+        Takes a display display.
+
+        Args:
+            self: (todo): write your description
+            image: (array): write your description
+        """
         self.send_command(0x13)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(~image[i]);
@@ -146,6 +198,12 @@ class EPD:
         self.ReadBusy()
         
     def Clear(self):
+        """
+        !
+
+        Args:
+            self: (todo): write your description
+        """
         self.send_command(0x10)
         for i in range(0, int(self.width * self.height / 8)):
             self.send_data(0x00)
@@ -159,6 +217,12 @@ class EPD:
         self.ReadBusy()
 
     def sleep(self):
+        """
+        Sleep the command.
+
+        Args:
+            self: (todo): write your description
+        """
         self.send_command(0x02) # POWER_OFF
         self.ReadBusy()
         
@@ -166,6 +230,12 @@ class EPD:
         self.send_data(0XA5)
         
     def Dev_exit(self):
+        """
+        Exit the exit.
+
+        Args:
+            self: (todo): write your description
+        """
         epdconfig.module_exit()
 ### END OF FILE ###
 
