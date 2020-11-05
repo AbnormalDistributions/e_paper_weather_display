@@ -23,6 +23,13 @@ import csv
 
 # define funciton for writing image and sleeping for 5 min.
 def write_to_screen(image, sleep_seconds):
+    """
+    Write the screen to screen
+
+    Args:
+        image: (array): write your description
+        sleep_seconds: (todo): write your description
+    """
     print('Writing to screen.')
     # Write to screen
     h_image = Image.new('1', (epd.width, epd.height), 255)
@@ -37,6 +44,12 @@ def write_to_screen(image, sleep_seconds):
 
 # define function for displaying error
 def display_error(error_source):
+    """
+    Display an error.
+
+    Args:
+        error_source: (str): write your description
+    """
     # Display an error
     print('Error in the', error_source, 'request.')
     # Initialize drawing
