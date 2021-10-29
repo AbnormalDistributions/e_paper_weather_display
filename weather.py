@@ -30,8 +30,11 @@ def write_to_screen(image, sleep_seconds):
     screen_output_file = Image.open(os.path.join(picdir, image))
     # Initialize the drawing context with template as background
     h_image.paste(screen_output_file, (0, 0))
+    epd.init()
     epd.display(epd.getbuffer(h_image))
     # Sleep
+    time.sleep(2)
+    epd.sleep()
     print('Sleeping for ' + str(sleep_seconds) +'.')
     time.sleep(sleep_seconds)
 
