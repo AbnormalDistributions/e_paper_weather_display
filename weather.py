@@ -55,7 +55,7 @@ def display_error(error_source):
     error_image.save(os.path.join(picdir, error_image_file))
     # Close error image
     error_image.close()
-    # Write error to screen 
+    # Write error to screen
     write_to_screen(error_image_file, 30)
 
 # Set the fonts
@@ -66,6 +66,7 @@ font50 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 50)
 font60 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 60)
 font100 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 100)
 font160 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 160)
+
 # Set the colors
 black = 'rgb(0,0,0)'
 white = 'rgb(255,255,255)'
@@ -76,15 +77,33 @@ print('Initializing and clearing screen.')
 epd.init()
 epd.Clear()
 
+### Config ###
 API_KEY = '******API KEY*******'
 LOCATION = '*******'
 LATITUDE = '*******'
 LONGITUDE = '*******'
+SCREEN_REFRESH = 600
+CSV_OPTION = False
+# set to 'metric','imperial', or 'standard' for kelvin 
 UNITS = 'imperial'
-CSV_OPTION = True # if csv_option == True, a weather data will be appended to 'record.csv'
 
 BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
 URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
+
+# dynamically set sign based on imperial or metric units
+# - https://openweathermap.org/api/one-call-api#data
+UNITS_SIGN = ''
+UNITS_WINDSPEED = ''
+if UNITS == 'imperial':
+    UNITS_SIGN = 'F'
+    UNITS_WINDSPEED = 'MPH'
+elif UNITS == 'metric':
+    UNITS_SIGN = 'C' 
+    UNITS_WINDSPEED = 'M/sec'
+else:
+    UNITS_SIGN = 'K' 
+    UNITS_WINDSPEED = 'M/sec'
+
 
 while True:
     # Ensure there are no errors with connection
@@ -154,30 +173,18 @@ while True:
             
             # Set strings to be printed to screen
             string_location = LOCATION
-            string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}F'
-            string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}F'
+            string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
+            string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}' + UNITS_SIGN
             string_humidity = 'Humidity: ' + str(humidity) + '%'
-            string_wind = 'Wind: ' + format(wind, '.1f') + ' MPH'
+            string_wind = 'Wind: ' + format(wind, '.1f') + ' ' + UNITS_WINDSPEED
             string_report = 'Now: ' + report.title()
-            string_temp_max = 'High: ' + format(temp_max, '>.0f') + u'\N{DEGREE SIGN}F'
-            string_temp_min = 'Low:  ' + format(temp_min, '>.0f') + u'\N{DEGREE SIGN}F'
+            string_temp_max = 'High: ' + format(temp_max, '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
+            string_temp_min = 'Low:  ' + format(temp_min, '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
             string_precip_percent = 'Precip: ' + str(format(daily_precip_percent, '.0f'))  + '%'
             
             # Set error code to false
             error = False
             
-            '''
-            print('Location:', LOCATION)
-            print('Temperature:', format(temp_current, '.0f'), u'\N{DEGREE SIGN}F') 
-            print('Feels Like:', format(feels_like, '.0f'), 'F') 
-            print('Humidity:', humidity)
-            print('Wind Speed:', format(wind_speed, '.1f'), 'MPH')
-            print('Report:', report.title())
-            
-            print('High:', format(temp_max, '.0f'), 'F')
-            print('Low:', format(temp_min, '.0f'), 'F')
-            print('Probabilty of Precipitation: ' + str(format(daily_precip_percent, '.0f'))  + '%')
-            '''    
         else:
             # Call function to display HTTP error
             display_error('HTTP')
@@ -199,8 +206,17 @@ while True:
     draw.text((30, 200), string_report, font=font22, fill=black)
     draw.text((30, 240), string_precip_percent, font=font30, fill=black)
     # Draw top right box
-    draw.text((375, 35), string_temp_current, font=font160, fill=black)
     draw.text((350, 210), string_feels_like, font=font50, fill=black)
+    
+    # detect minus in metric and adjust screen
+    if (UNITS == 'metric') and ( int(temp_current) < 0):
+        draw.text((340, 35), string_temp_current, font=font160, fill=black)
+    elif (UNITS == 'imperial') or (UNITS == 'metric'):
+        draw.text((375, 35), string_temp_current, font=font160, fill=black)
+    else:
+        #need more space for kelvin
+        draw.text((310, 35), string_temp_current, font=font160, fill=black)
+
     # Draw bottom left box
     draw.text((35, 325), string_temp_max, font=font50, fill=black)
     draw.rectangle((170, 385, 265, 387), fill=black)
@@ -227,8 +243,8 @@ while True:
     
     # Refresh clear screen to avoid burn-in at 3:00 AM
     if datetime.now().strftime('%H') == '03':
-    	print('Clearning screen to avoid burn-in.')
-    	epd.Clear()
+        print('Clearning screen to avoid burn-in.')
+        epd.Clear()
     
     # Write to screen
-    write_to_screen(screen_output_file, 600)
+    write_to_screen(screen_output_file, SCREEN_REFRESH)
