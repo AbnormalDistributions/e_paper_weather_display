@@ -83,7 +83,7 @@ LOCATION = '*******'
 LATITUDE = '*******'
 LONGITUDE = '*******'
 SCREEN_REFRESH = 600
-CSV_OPTION = False
+CSV_OPTION = True # if csv_option == True, a weather data will be appended to 'record.csv'
 # set to 'metric','imperial', or 'standard' for kelvin 
 UNITS = 'imperial'
 
