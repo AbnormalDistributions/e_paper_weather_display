@@ -46,6 +46,7 @@
     <ul>
       <li>Included the ability to change the unit type to imperial, metric, and kelvin</li>
       <li>Added a variable to control the refresh rate</li>
+      <li>Updated 7in5 v2 drivers from waveshare</li>
     </ul>
 
 
