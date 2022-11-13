@@ -1,99 +1,41 @@
 # This little program is for the Waveshare 7.5
 # inch Version 2 black and white only epaper display
 # It uses OpenWeatherMap API to display weather info
+from datetime import datetime
+from PIL import Image,ImageDraw,ImageFont
+from io import BytesIO
+
+import traceback
+import requests, json
+import time
 import sys
 import os
-picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
-icondir = os.path.join(picdir, 'icon')
-fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 
-# Search lib folder for display driver modules
 sys.path.append('lib')
 from waveshare_epd import epd7in5_V2
 epd = epd7in5_V2.EPD()
 
-from datetime import datetime
-import time
-from PIL import Image,ImageDraw,ImageFont
-import traceback
+# Variables
+BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
 
-import requests, json
-from io import BytesIO
-import csv
+#Set screen refresh freuqncy 
+refresh_frequency_min = 5
 
-# define funciton for writing image and sleeping for 5 min.
-def write_to_screen(image, sleep_seconds):
-    print('Writing to screen.')
-    # Write to screen
-    h_image = Image.new('1', (epd.width, epd.height), 255)
-    # Open the template
-    screen_output_file = Image.open(os.path.join(picdir, image))
-    # Initialize the drawing context with template as background
-    h_image.paste(screen_output_file, (0, 0))
-    epd.init()
-    epd.display(epd.getbuffer(h_image))
-    # Sleep
-    time.sleep(2)
-    epd.sleep()
-    print('Sleeping for ' + str(sleep_seconds) +'.')
-    time.sleep(sleep_seconds)
+#API key for http://api.openweathermap.org/data/2.5/onecall?' 
+API_KEY = 'caf948d1367bce71979e42579e981b34'
 
-# define function for displaying error
-def display_error(error_source):
-    # Display an error
-    print('Error in the', error_source, 'request.')
-    # Initialize drawing
-    error_image = Image.new('1', (epd.width, epd.height), 255)
-    # Initialize the drawing
-    draw = ImageDraw.Draw(error_image)
-    draw.text((100, 150), error_source +' ERROR', font=font50, fill=black)
-    draw.text((100, 300), 'Retrying in 30 seconds', font=font22, fill=black)
-    current_time = datetime.now().strftime('%H:%M')
-    draw.text((300, 365), 'Last Refresh: ' + str(current_time), font = font50, fill=black)
-    # Save the error image
-    error_image_file = 'error.png'
-    error_image.save(os.path.join(picdir, error_image_file))
-    # Close error image
-    error_image.close()
-    # Write error to screen
-    write_to_screen(error_image_file, 30)
+#screen stuff 
+picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
+fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 
-# Set the fonts
-font22 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 22)
-font30 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 30)
-font35 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 35)
-font50 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 50)
-font60 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 60)
-font100 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 100)
-font160 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 160)
-
-# Set the colors
+# Screen colors
 black = 'rgb(0,0,0)'
 white = 'rgb(255,255,255)'
 grey = 'rgb(235,235,235)'
 
-# Initialize and clear screen
-print('Initializing and clearing screen.')
-epd.init()
-epd.Clear()
 
-### Config ###
-API_KEY = '******API KEY*******'
-LOCATION = '*******'
-LATITUDE = '*******'
-LONGITUDE = '*******'
-SCREEN_REFRESH = 600
-CSV_OPTION = True # if csv_option == True, a weather data will be appended to 'record.csv'
-# set to 'metric','imperial', or 'standard' for kelvin 
-UNITS = 'imperial'
-
-BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
-URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
-
-# dynamically set sign based on imperial or metric units
-# - https://openweathermap.org/api/one-call-api#data
-UNITS_SIGN = ''
-UNITS_WINDSPEED = ''
+#Choose 'metric','imperial', or 'standard' for kelvin 
+UNITS = 'metric'
 if UNITS == 'imperial':
     UNITS_SIGN = 'F'
     UNITS_WINDSPEED = 'MPH'
@@ -104,147 +46,155 @@ else:
     UNITS_SIGN = 'K' 
     UNITS_WINDSPEED = 'M/sec'
 
+#generate URL
+#URL = BASE_URL + 'lat=' + LATITUDE + '&lon=' + LONGITUDE + '&units=' + UNITS +'&appid=' + API_KEY
+URL = BASE_URL + 'lat=' + '44.977753' + '&lon=' + '-93.265015' + '&units=' + UNITS +'&appid=' + API_KEY
 
-while True:
-    # Ensure there are no errors with connection
-    error_connect = True
-    while error_connect == True:
-        try:
-            # HTTP request
-            print('Attempting to connect to OWM.')
-            response = requests.get(URL)
-            print('Connection to OWM successful.')
-            error_connect = None
-        except:
-            # Call function to display connection error
-            print('Connection error.')
-            display_error('CONNECTION') 
-    
-    error = None
-    while error == None:
-        # Check status of code request
-        if response.status_code == 200:
-            print('Connection to Open Weather successful.')
-            # get data in jason format
-            data = response.json()
-            
-            # get current dict block
-            current = data['current']
-            # get current
-            temp_current = current['temp']
-            # get feels like
-            feels_like = current['feels_like']
-            # get humidity
-            humidity = current['humidity']
-            # get pressure
-            wind = current['wind_speed']
-            # get description
-            weather = current['weather']
-            report = weather[0]['description']
-            # get icon url
-            icon_code = weather[0]['icon']
-            #icon_URL = 'http://openweathermap.org/img/wn/'+ icon_code +'@4x.png'
-            
-            # get daily dict block
-            daily = data['daily']
-            # get daily precip
-            daily_precip_float = daily[0]['pop']
-            #format daily precip
-            daily_precip_percent = daily_precip_float * 100
-            # get min and max temp
-            daily_temp = daily[0]['temp']
-            temp_max = daily_temp['max']
-            temp_min = daily_temp['min']
-            
-            # Append weather data to CSV if csv_option == True
-            if CSV_OPTION == True:
-                # Get current year, month, date, and time
-                current_year = datetime.now().strftime('%Y')
-                current_month = datetime.now().strftime('%m')
-                current_date = datetime.now().strftime('%d')
-                current_time = datetime.now().strftime('%H:%M')
-                #open the CSV and append weather data
-                with open('records.csv', 'a', newline='') as csv_file:
-                    writer = csv.writer(csv_file, delimiter=',')
-                    writer.writerow([current_year, current_month, current_date, current_time,
-                                     LOCATION,temp_current, feels_like, temp_max, temp_min,
-                                     humidity, daily_precip_float, wind])
-                print('Weather data appended to CSV.')
-            
-            # Set strings to be printed to screen
-            string_location = LOCATION
-            string_temp_current = format(temp_current, '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
-            string_feels_like = 'Feels like: ' + format(feels_like, '.0f') +  u'\N{DEGREE SIGN}' + UNITS_SIGN
-            string_humidity = 'Humidity: ' + str(humidity) + '%'
-            string_wind = 'Wind: ' + format(wind, '.1f') + ' ' + UNITS_WINDSPEED
-            string_report = 'Now: ' + report.title()
-            string_temp_max = 'High: ' + format(temp_max, '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
-            string_temp_min = 'Low:  ' + format(temp_min, '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN
-            string_precip_percent = 'Precip: ' + str(format(daily_precip_percent, '.0f'))  + '%'
-            
-            # Set error code to false
-            error = False
-            
-        else:
-            # Call function to display HTTP error
-            display_error('HTTP')
 
-    # Open template file
-    template = Image.open(os.path.join(picdir, 'template.png'))
-    # Initialize the drawing context with template as background
-    draw = ImageDraw.Draw(template)
-    
-    # Draw top left box
-    ## Open icon file
-    icon_file = icon_code + '.png' 
-    icon_image = Image.open(os.path.join(icondir, icon_file))
-    ### Paste the image
-    template.paste(icon_image, (40, 15))
-    ## Place a black rectangle outline
-    draw.rectangle((25, 20, 225, 180), outline=black)
-    ## Draw text
-    draw.text((30, 200), string_report, font=font22, fill=black)
-    draw.text((30, 240), string_precip_percent, font=font30, fill=black)
-    # Draw top right box
-    draw.text((350, 210), string_feels_like, font=font50, fill=black)
-    
-    # detect minus in metric and adjust screen
-    if (UNITS == 'metric') and ( int(temp_current) < 0):
-        draw.text((340, 35), string_temp_current, font=font160, fill=black)
-    elif (UNITS == 'imperial') or (UNITS == 'metric'):
-        draw.text((375, 35), string_temp_current, font=font160, fill=black)
-    else:
-        #need more space for kelvin
-        draw.text((310, 35), string_temp_current, font=font160, fill=black)
-
-    # Draw bottom left box
-    draw.text((35, 325), string_temp_max, font=font50, fill=black)
-    draw.rectangle((170, 385, 265, 387), fill=black)
-    draw.text((35, 390), string_temp_min, font=font50, fill=black)
-    # Draw bottom middle box
-    draw.text((345, 340), string_humidity, font=font30, fill=black)
-    draw.text((345, 400), string_wind, font=font30, fill=black)
-    # Draw bottom right box
-    draw.text((627, 330), 'UPDATED', font=font35, fill=white)
+# define function for displaying error
+def display_error(error_source):
+    print('[ ERROR ] : request ', error_source)
+    error_image = Image.new('1', (epd.width, epd.height), 255)
+    draw = ImageDraw.Draw(error_image)
+    draw.text((100, 150), error_source +' ERROR', font=font50, fill='rgb(0,0,0)')
+    draw.text((100, 300), 'Retrying in 30 seconds', font=font22, fill=black)
     current_time = datetime.now().strftime('%H:%M')
-    draw.text((627, 375), current_time, font = font60, fill=white)
+    draw.text((300, 365), 'Last Refresh: ' + str(current_time), font = font50, fill=black)
+    error_image_file = 'error.png'
+    error_image.save(os.path.join(picdir, error_image_file))
+    error_image.close()
+    write_to_screen(error_image_file, 30)
 
-    ## Add a reminder to take out trash on Mon and Thurs
-    weekday = datetime.today().weekday()
-    if weekday == 0 or weekday == 3:
-        draw.rectangle((345, 13, 705, 55), fill =black)
-        draw.text((355, 15), 'TAKE OUT TRASH TODAY!', font=font30, fill=white)
-        
-    # Save the image for display as PNG
-    screen_output_file = os.path.join(picdir, 'screen_output.png')
-    template.save(screen_output_file)
-    # Close the template file
+
+def api_connect():
+    try:
+        response=requests.get(URL)
+        print('[ SUCCESS  ] Connected to OWM')
+        if response.status_code != 200:
+            display_error('HTTP')
+        print('[ SUCCESS  ] Refreshed API at : ' + str(datetime.now()))
+        return response
+    except:
+        display_error('CONNECTION') 
+
+
+# write image and sleep
+def write_to_screen(image):
+    screen_output_file = Image.open(os.path.join(picdir, image))
+    print('[ REFRESH  ] Screen ' + str(datetime.now()))
+    epd.init()
+    h_image = Image.new('1', (epd.width, epd.height), 255)
+    h_image.paste(screen_output_file, (0, 0))
+    epd.display(epd.getbuffer(h_image))
+    time.sleep(2)
+    epd.sleep()
+
+
+def debug_data(data):
+    print('[ DEBUG    ] ' + str(datetime.now()))
+    print "temp       : " + str(data['current']['temp'])
+    print "temp_min   : " + str(data['daily'][0]['temp']['min'])
+    print "temp_max   : " + str(data['daily'][0]['temp']['max'])
+    print "feels_like : " + str(data['current']['feels_like'])
+    print "precip     : " + str(data['daily'][0]['pop'] * 100)
+    print "desc       : " + str(data['current']['weather'][0]['description'].title())
+
+### screen stuff here ###
+def prepare_screen(data):
+    template = Image.open(os.path.join(picdir, 'template.png'))
+
+    #font variables
+    font22 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 22)
+    font30 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 30)
+    font50 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 50)
+    font60 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 60)
+    font160 = ImageFont.truetype(os.path.join(fontdir, 'Font.ttc'), 160)
+    
+    #Border
+    ImageDraw.Draw(template).rectangle((25, 20, 225, 180), outline=black)
+
+    #Left box
+    ImageDraw.Draw(template).rectangle((170, 385, 265, 387), fill=black)
+
+    #Icon in top left
+    template.paste(Image.open(os.path.join(os.path.join(picdir, 'icon'), data['current']['weather'][0]['icon'] + '.png')), (40, 15))
+
+    #detect minus in metric and adjust screen
+    if (UNITS == 'metric') and ( data['current']['temp'], '.0f' < 0):
+        ImageDraw.Draw(template).text((340, 35), format(data['current']['temp'], '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font160, fill=black)
+    elif (UNITS == 'imperial') or (UNITS == 'metric'):
+        ImageDraw.Draw(template).text((375, 35), format(data['current']['temp'], '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font160, fill=black)
+    else:
+        ImageDraw.Draw(template).text((310, 35), format(data['current']['temp'], '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font160, fill=black)
+
+    #draw text
+    ImageDraw.Draw(template).text((30, 200), data['current']['weather'][0]['description'].title(), font=font22, fill=black)
+    ImageDraw.Draw(template).text((30, 240), 'Precip: ' + str(format(data['daily'][0]['pop'] * 100, '.0f'))  + '%', font=font30, fill=black)
+    
+    #top right
+    ImageDraw.Draw(template).text((350, 210), 'Feels like: ' + format(data['current']['feels_like'], '.0f') +  u'\N{DEGREE SIGN}'  + UNITS_SIGN, font=font50, fill=black)
+    
+    #high
+    ImageDraw.Draw(template).text((35, 325), 'High: ' + format(data['daily'][0]['temp']['max'], '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font50, fill=black)
+    
+    #low
+    ImageDraw.Draw(template).text((35, 390), "Low : " + str(data['daily'][0]['temp']['min']), font=font50, fill=black)
+    
+    #bottom middle box
+    ImageDraw.Draw(template).text((345, 340), 'Humidity: ' + str(data['current']['humidity']) + '%', font=font30, fill=black)
+    ImageDraw.Draw(template).text((345, 400), 'Wind: ' + format(data['current']['wind_speed'], '.1f') + ' ' + UNITS_WINDSPEED, font=font30, fill=black)
+    
+    #bottom right
+    ImageDraw.Draw(template).text((620, 330), 'Time:', font=font30, fill=white)
+
+    ##issue
+    ImageDraw.Draw(template).text((620, 375), datetime.now().strftime('%H:%M'), font = font60, fill=white)
+
+    #Send things to the screen
+    screen_output = os.path.join(picdir, 'screen_output.png')
+    template.save(screen_output)
     template.close()
-    
-    # Refresh clear screen to avoid burn-in at 3:00 AM
-    if datetime.now().strftime('%H') == '03':
-        print('Clearning screen to avoid burn-in.')
-        epd.Clear()
-    
-    # Write to screen
-    write_to_screen(screen_output_file, SCREEN_REFRESH)
+    return screen_output
+
+
+#Clear screen
+def init_screen():
+    print('[ INIT     ] Screen')
+    epd.init()
+    epd.Clear()
+
+
+# refresh clock on the 5 mins
+def sleep():
+    current_time = datetime.now()
+    print '[ DEBUG    ]'
+    print 'time             : ' + str(current_time)
+    print 'time modulo %5   : ' + str(current_time.minute % 5)
+    print 'Wait in mins     : ' + str(4 - (current_time.minute % 5))
+    print 'Wait in seconds  : ' + str(60 - current_time.second)
+
+    if ( (5 - (current_time.minute % 5)) <= 1 ):
+        print "[ WAITING  ] " + str(60 - current_time.second) + " seconds"
+        time.sleep(60 - current_time.second)
+    else:
+        print "[ WAITING  ] " + str(4 - (current_time.minute % 5)) + ' mins ' + str(60 - current_time.second) + " seconds"
+        #time.sleep(20)
+        time.sleep((5 - (current_time.minute % 5)) * 60 + (60 - current_time.second) )
+
+
+
+def main():
+    init_screen()
+
+    #needs to be refreshed 
+    while True:
+        print '[ TIME     ] ' + str(datetime.now())
+        data = api_connect().json()
+        debug_data(data)
+        screen_output = prepare_screen(data)
+        write_to_screen(screen_output)
+        sleep()
+
+
+### main ###
+main()
