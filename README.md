@@ -42,6 +42,12 @@
       <li>Added clear screen function to reduce possibility of burn-in.</li>
       <li>Changed refresh time from 300 to 600 seconds.</li>
     </ul>
+  <h2>Version 1.8</h2>
+    <ul>
+      <li>Included the ability to change the unit type to imperial, metric, and kelvin</li>
+      <li>Added a variable to control the refresh rate</li>
+      <li>Updated 7in5 v2 drivers from waveshare</li>
+    </ul>
 
 
 
