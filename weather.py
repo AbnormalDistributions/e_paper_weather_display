@@ -17,9 +17,10 @@ epd = epd7in5_V2.EPD()
 
 # Variables
 BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?' 
+#Free API only updates 1 per 2 hours - https://openweathermap.org/full-price#current
 
 #Set screen refresh freuqncy 
-refresh_frequency_min = 5
+screen_refresh_min = 5
 
 #API key for http://api.openweathermap.org/data/2.5/onecall?' 
 API_KEY = 'caf948d1367bce71979e42579e981b34'
@@ -32,7 +33,6 @@ fontdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'font')
 black = 'rgb(0,0,0)'
 white = 'rgb(255,255,255)'
 grey = 'rgb(235,235,235)'
-
 
 #Choose 'metric','imperial', or 'standard' for kelvin 
 UNITS = 'metric'
@@ -98,6 +98,10 @@ def debug_data(data):
     print "feels_like : " + str(data['current']['feels_like'])
     print "precip     : " + str(data['daily'][0]['pop'] * 100)
     print "desc       : " + str(data['current']['weather'][0]['description'].title())
+    print "dewpoint   : " + str(data['current']['dew_point'])
+    print "sunrise    : " + datetime.fromtimestamp(data['current']['sunrise']).strftime('%I:%M %p')
+    print "sunset     : " + datetime.fromtimestamp(data['current']['sunset']).strftime('%I:%M %p')
+
 
 ### screen stuff here ###
 def prepare_screen(data):
@@ -128,8 +132,10 @@ def prepare_screen(data):
         ImageDraw.Draw(template).text((310, 35), format(data['current']['temp'], '.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font160, fill=black)
 
     #draw text
-    ImageDraw.Draw(template).text((30, 200), data['current']['weather'][0]['description'].title(), font=font22, fill=black)
-    ImageDraw.Draw(template).text((30, 240), 'Precip: ' + str(format(data['daily'][0]['pop'] * 100, '.0f'))  + '%', font=font30, fill=black)
+    ImageDraw.Draw(template).text((30, 190), data['current']['weather'][0]['description'].title(), font=font22, fill=black)
+    ImageDraw.Draw(template).text((30, 220), 'Rain : ' + str(format(data['daily'][0]['pop'] * 100, '.0f'))  + '%', font=font22, fill=black)
+    ImageDraw.Draw(template).text((30, 250), 'Dew  : ' + str(data['current']['dew_point']) + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font22, fill=black)
+
     
     #top right
     ImageDraw.Draw(template).text((350, 210), 'Feels like: ' + format(data['current']['feels_like'], '.0f') +  u'\N{DEGREE SIGN}'  + UNITS_SIGN, font=font50, fill=black)
@@ -138,14 +144,15 @@ def prepare_screen(data):
     ImageDraw.Draw(template).text((35, 325), 'High: ' + format(data['daily'][0]['temp']['max'], '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font50, fill=black)
     
     #low
-    ImageDraw.Draw(template).text((35, 390), "Low : " + str(data['daily'][0]['temp']['min']), font=font50, fill=black)
+    ImageDraw.Draw(template).text((35, 390), "Low : " + format(data['daily'][0]['temp']['min'], '>.0f') + u'\N{DEGREE SIGN}' + UNITS_SIGN, font=font50, fill=black)
     
     #bottom middle box
     ImageDraw.Draw(template).text((345, 340), 'Humidity: ' + str(data['current']['humidity']) + '%', font=font30, fill=black)
     ImageDraw.Draw(template).text((345, 400), 'Wind: ' + format(data['current']['wind_speed'], '.1f') + ' ' + UNITS_WINDSPEED, font=font30, fill=black)
     
     #bottom right
-    ImageDraw.Draw(template).text((620, 330), 'Time:', font=font30, fill=white)
+    ImageDraw.Draw(template).text((610, 305), 'sunset  ' + datetime.fromtimestamp(data['current']['sunset']).strftime('%I:%M %p') , font=font22, fill=white)
+    ImageDraw.Draw(template).text((610, 327), 'sunrise ' + datetime.fromtimestamp(data['current']['sunrise']).strftime('%I:%M %p') , font=font22, fill=white)
 
     ##issue
     ImageDraw.Draw(template).text((620, 375), datetime.now().strftime('%H:%M'), font = font60, fill=white)
@@ -167,26 +174,18 @@ def init_screen():
 # refresh clock on the 5 mins
 def sleep():
     current_time = datetime.now()
-    print '[ DEBUG    ]'
-    print 'time             : ' + str(current_time)
-    print 'time modulo %5   : ' + str(current_time.minute % 5)
-    print 'Wait in mins     : ' + str(4 - (current_time.minute % 5))
-    print 'Wait in seconds  : ' + str(60 - current_time.second)
-
-    if ( (5 - (current_time.minute % 5)) <= 1 ):
-        print "[ WAITING  ] " + str(60 - current_time.second) + " seconds"
-        time.sleep(60 - current_time.second)
-    else:
-        print "[ WAITING  ] " + str(4 - (current_time.minute % 5)) + ' mins ' + str(60 - current_time.second) + " seconds"
-        #time.sleep(20)
-        time.sleep((5 - (current_time.minute % 5)) * 60 + (60 - current_time.second) )
-
+    #print 'time                : ' + str(current_time)
+    #print 'current_time.minute : ' + str(current_time.minute)
+    #print 'time % refresh      : ' + str(current_time.minute % screen_refresh_min)
+    if ((current_time.minute % screen_refresh_min) == 0):
+        print("[ SLEEPING ] " + str(screen_refresh_min - 1) + ' mins ' + str(60 - current_time.second) + ' sec')
+        time.sleep(((screen_refresh_min - 1) * 60 ) + (60 - current_time.second))
+    else: 
+        print("[ SLEEPING ] " + str(screen_refresh_min - (current_time.minute % screen_refresh_min) - 1) + ' mins ' + str(60 - current_time.second) + ' sec')
+        time.sleep(((screen_refresh_min - (current_time.minute % screen_refresh_min) - 1) * 60) + (60 - current_time.second))
 
 
 def main():
-    init_screen()
-
-    #needs to be refreshed 
     while True:
         print '[ TIME     ] ' + str(datetime.now())
         data = api_connect().json()
