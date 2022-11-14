@@ -25,7 +25,7 @@ BASE_URL = 'http://api.openweathermap.org/data/2.5/onecall?'
 screen_refresh_min = 5
 
 #API key for http://api.openweathermap.org/data/2.5/onecall?' 
-API_KEY = 'caf948d1367bce71979e42579e981b34'
+API_KEY = 'XXXX'
 
 #screen stuff 
 picdir = os.path.join(os.path.dirname(os.path.realpath(__file__)), 'pic')
