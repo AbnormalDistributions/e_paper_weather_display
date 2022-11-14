@@ -1,3 +1,5 @@
+#!/usr/bin/python
+
 # This little program is for the Waveshare 7.5
 # inch Version 2 black and white only epaper display
 # It uses OpenWeatherMap API to display weather info
