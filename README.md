@@ -32,7 +32,7 @@ If you find this project useful, consider [buying me a coffee ☕️](https://ko
 - **Trash Day Reminders**: Customize specific days to get reminders on the display.
 
 ### Parts List
-- **Waveshare 7.5-inch e-Paper HAT**: [Available on Amazon](https://amzn.to/3YuH1kA) (affiliate link).  
+- **Waveshare 7.5-inch e-Paper HAT**: [Available on Amazon](https://amzn.to/3UBxuah) (affiliate link).  
 - **Raspberry Pi** (tested on a Pi 3; any model should work except the Pi Zero without soldered headers).
 - **SD card** (at least 8 GB).
 - **Power supply** for the Raspberry Pi.
